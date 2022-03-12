@@ -1,0 +1,47 @@
+Sequences - most basic data structure
+    each element is assigned a number (index)
+    first index is 0, second is 1, etc.
+    6 built-in types of sequences in python
+        indexing, slicing, adding, multiplying, checking for membership
+
+
+Lists - comma separated values
+    can mix data types
+
+    format:
+        listName = [item1, item2, ..., itemN]
+
+    accessing values in list:
+        listName[index]
+        ex: print(list1[2])
+    
+    updating values in list:
+        listName[index] = newValue
+        ex: list1[2] = 2009
+    
+    deleting values from list:
+        del listName[index]
+        ex: del list1[2]
+
+List operations
+
+    checking list length
+    ex: len([1, 2, 3])  ---> 3
+
+    adding lists
+    [1, 2, 3] + [4, 5, 6] ---> [1, 2, 3, 4, 5, 6]
+
+Dictionaries
+    built-in mapping type
+    values mapped to keys
+        typically referred to as key:value pairs
+    
+    creating empty dictionary:
+    {}
+    ex: eng2sp = {}
+        eng2sp["one"] = "uno"
+
+    Dictionaries used for hashing
+        allows for quick access to values, tuples is much slower
+        accesses the keys, not the indices
+    

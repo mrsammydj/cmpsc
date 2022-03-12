@@ -1,0 +1,61 @@
+            Output
+print()
+    outputs whatever is inside the ()
+
+print(value, ..., sep='', end='/n', file=sys.stdout, flush=False)
+    value -> will output a comma separated list of data
+    sep='' -> default separator for the comma separated list of data
+    end='/n' -> default ending for the output. /n will start on new line
+    flie=sys.stdout -> where the output will be displayed to. shell or a file
+
+
+             Comments
+Can be single line or multiple lines
+Single line: good for short, quick comments
+    Basic format -> #information
+Multiple: describing in detail or blocking out code
+    Basic format ->  '''
+                        information
+                     '''
+
+
+            Using Variables
+Variables are the heart of every good programming language
+Python interprets and declares variables when set a value to them
+    a = 0   b = 2
+    print(a + b) -> 2
+
+Python will figure out the type of variable
+    a = "0" b = "2"
+    print(a + b) -> 02
+
+Python allows you to cast variables to other data types
+    a = "0"  b = 2
+    print(int(a) + b) -> 2
+
+int(variable) - casts variable to integer
+str(variable) - casts variable to string
+float(variable) - casts variable to float (number with decimal)
+
+Variable names can only contain the following characters:
+    lowercase letters (a through z)
+    uppercase letts (A through Z)
+    digits (0 through 9)
+    underscore (_)
+
+
+            Basic Input
+Input
+    Basic format -> input()
+        calling this will allow you to input a string type of data
+        can set equal to a variable too
+    Advanced format -> input("Prompt the user: ")
+        adds a prompt message to the input 
+
+
+            Basic Arithmetic Operations
+Addition (1 + 2) Subtraction (1 - 2) Multiplication (1 * 2) Division (1 / 2)
+
+
+            Advanced Operators
+Modulus (3 % 4) Powers (3 ** 4) Floor Division (3 // 4) Assignment Operator (3 += 4)
