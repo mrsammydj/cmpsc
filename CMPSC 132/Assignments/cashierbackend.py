@@ -1,5 +1,7 @@
 #Cashier/inventory management system
 
+import unittest
+
 
 class Inventory:
     '''Create inventory class'''
@@ -7,36 +9,24 @@ class Inventory:
         self.inv = inv
 
 
-    def addItem(self):
-        new_item_name = input("Please input the name for a new item: ").capitalize()
-        new_item_barcode = input("Please input a barcode for this new item: ")
-        new_item_price = input("Please input a price for this new item: ")
-        self.inv[new_item_barcode] = new_item_name, new_item_price
+    def addItem(self, code, item_name, item_price):
+        self.inv[code] = item_name, item_price
         print()
-        print("Item [",new_item_name,"] has been added to the inventory!",sep="")
-        print()
-        return self
+        print("Item [",item_name,"] has been added to the inventory!",sep="")
+        self.displayItemDetails(code)
 
 
-    def delItem(self):
+    def delItem(self, code):
         self.displayInv()
-        removed_barcode = int(input("Please input a barcode to delete: "))
-        for key in self.inv:
-            if removed_barcode == key:
-                print("Item [",self.inv[key][0],"] has been deleted to the inventory!",sep="")
-                del self.inv[key]
-                break
+        print("Item [",self.inv[code][0],"] has been deleted to the inventory!",sep="")
+        del self.inv[code]
             
 
-    def editItem(self):
+    def editItem(self, code, item_name, item_price):
         self.displayInv()
-        edited_barcode = int(input("Please input a barcode to edit: "))
-        for key in self.inv:
-            if edited_barcode == key:
-                self.inv[key][0] = (input("Please input a name for this item: ")).capitalize()
-                self.inv[key][1] = input("Please input a price for this item: ")
-                print("Item [",self.inv[key][0],"] has been successfully edited!", sep="")
-                break
+        self.inv[code][0] = item_name
+        self.inv[code][1] = item_price
+        print("Item [",self.inv[code][0],"] has been successfully edited!", sep="")
     
     def retrieveItemSet(self, code):
         for key in self.inv:
@@ -118,6 +108,29 @@ class Cart(Inventory):
         print()
         
 
+    class TestInv(unittest.TestCase):
+        '''Unit testing'''
+        def test_addItem(self):
+            pass
+
+        def test_delItem(self):
+            pass
+
+        def test_editItem(self):
+            pass
+
+        def test_addItem(self):
+            pass
+
+        def test_displayItemDetails(self):
+            pass
+
+        def test_displayInv(self):
+            pass
+            
+
+
+
             
 def main():
 
@@ -130,7 +143,8 @@ def main():
 
     shoppingcart = Cart({}, inv)
 
-    shoppingcart.scanning()
+    unittest.main()
+
 
     
 
