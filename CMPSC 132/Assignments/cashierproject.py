@@ -8,44 +8,27 @@ class Inventory:
         self.inv = inv
 
 
-class addInv(Inventory):
-    '''Add to inventory class'''
-    def __init__(self):
-        Inventory.__init__(self) 
-    
-    def add(self):
-        new_item_name = input("Please input the name for a new item: ")
+    def addInv(self):
+        new_item_name = input("Please input the name for a new item: ").capitalize()
         new_item_barcode = input("Please input a barcode for this new item: ")
         new_item_price = input("Please input a price for this new item: ")
-        self.inv[new_item_barcode] = [new_item_name, new_item_price]
+        self.inv[new_item_barcode] = new_item_name, new_item_price
+        print()
+        print("Item [",new_item_name,"] has been added to the inventory!",sep="")
+        print()
+        return self
 
 
-class delInv(Inventory):
-    '''Remove from inventory class'''
-    def __init__(self):
-        Inventory.__init__(self) 
-
-    def delete(self):
-        displayInv.__str__(self)
+    def delInv(self):
         removed_barcode = int(input("Please input a barcode to delete: "))
         for key in self.inv:
-            if removed_barcode == key and self.inv[key][0][-1] == "s":
-                print(self.inv[key][0],"have been deleted from the inventory!")
+            if removed_barcode == key:
+                print("Item [",self.inv[key][0],"] has been deleted to the inventory!",sep="")
                 del self.inv[key]
                 break
-            if removed_barcode == key and self.inv[key][0][-1] != "s":
-                print(self.inv[key][0],"has been deleted from the inventory!")
-                del self.inv[key]
-                break
-        
+            
 
-class editInv(Inventory):
-    '''Edit inventory class'''
-    def __init__(self):
-        Inventory.__init__(self) 
-
-    def edit(self):
-        displayInv.__str__(self)
+    def editInv(self):
         edited_barcode = int(input("Please input a barcode to edit: "))
         for key in self.inv:
             if edited_barcode == key:
@@ -55,12 +38,7 @@ class editInv(Inventory):
                 break
 
 
-class displayInv(Inventory):
-    '''Display inventory class'''
-    def __init__(self):
-        Inventory.__init__(self) 
-    
-    def __str__(self):
+    def displayInv(self):
         print()
         print("{: >20} {: >20} {: >20}".format("Item Name", "Barcode", "Price"))
         print()
@@ -71,27 +49,73 @@ class displayInv(Inventory):
 
 class Cart(Inventory):
     '''Customer shopping cart class'''
-    def __init__(self, cart):
-        Inventory.__init__(self)
+    def __init__(self, cart, inv):
         self.cart = cart
+        self.inv = super().__init__(inv)
+        print(vars(inv))
+
+    
+    def scanning(self, inv):
+        Inventory.displayInv(inv)
+        print(isinstance(inv, Inventory))
+        scanned = 0
+        while scanned != "pay":
+            scanned = input("Input a barcode to scan or type 'pay' to pay: ")
+            if scanned.isdigit():
+                scanned = int(scanned)
+            for key in self.inv:
+                if key == scanned:
+                    print(self.inv[key])
+                    Cart.updateCart(self.cart, self.inv, key)
+                    total_price, total_items = Cart.updateTotals(self)
+                    Cart.displayCart(self, total_items, total_price)
+                    break
+        print()
+        print("Thank you for shopping!")
+    
+
+    def updateCart(self, inv, key):
+        self[key] = inv[key]
+        print(self)
 
 
+    def updateTotals(self):
+        total_price = 0
+        total_items = 0
+        for key in self.cart:
+            total_price += int(self.cart[key][1])
+            total_items += 1
+        return total_price, total_items
+
+    
+    def displayCart(self, total_items, total_price):
+        print()
+        print("{: >36}".format("---Your Cart---"))
+        print()
+        print("{: >20} {: >20} ".format("Item", "Price"))
+        print()
+        for key in self.cart:
+            print("{: >20} {: >20}".format(self.cart[key][0], ("$"+str(self.inv[key][1]))))
+        print("------------------------------------------")
+        print("Total price: {: >28}".format("$"+str(total_price)))
+        print()
+        
+
+            
 def main():
 
-    inventory = {0:["Boots",34],
+    inv = Inventory({0:["Boots",34],
                 1:["T-shirt",12],
                 2:["Jeans", 25],
                 3:["Socks", 4]
                 }
+                )
 
+    shoppingcart = Cart({}, inv)
 
-    inv = Inventory(inventory)
-
-
-    editInv.edit(inv)
-
-
-
+    inv.addInv()
+    shoppingcart.scanning(inv)
+    
 
 main()
 
