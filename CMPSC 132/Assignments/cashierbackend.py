@@ -1,5 +1,6 @@
 #Cashier/inventory management system
 
+from operator import delitem
 import unittest
 
 
@@ -9,17 +10,23 @@ class Inventory:
         self.inv = inv
 
 
+    def getInv(self):
+        return self.inv
+
+
     def addItem(self, code, item_name, item_price):
-        self.inv[code] = item_name, item_price
+        self.inv[code] = [item_name, item_price]
         print()
         print("Item [",item_name,"] has been added to the inventory!",sep="")
         self.displayItemDetails(code)
+        return self.inv
 
 
     def delItem(self, code):
         self.displayInv()
         print("Item [",self.inv[code][0],"] has been deleted to the inventory!",sep="")
         del self.inv[code]
+        return self.inv
             
 
     def editItem(self, code, item_name, item_price):
@@ -27,11 +34,8 @@ class Inventory:
         self.inv[code][0] = item_name
         self.inv[code][1] = item_price
         print("Item [",self.inv[code][0],"] has been successfully edited!", sep="")
+        return self.inv
     
-    def retrieveItemSet(self, code):
-        for key in self.inv:
-                if key == code:
-                    return self.inv[key]
 
     def retrieveItemPrice(self, code):
         for key in self.inv:
@@ -39,8 +43,9 @@ class Inventory:
                     return self.inv[key][1]
     
 
-
     def displayInv(self):
+        print()
+        print("{: >45}".format("---Inventory---"))
         print()
         print("{: >20} {: >20} {: >20}".format("Item Name", "Barcode", "Price"))
         print()
@@ -48,6 +53,7 @@ class Inventory:
             print("{: >20} {: >20} {: >20}".format(self.inv[key][0], key, ("$"+str(self.inv[key][1]))))
         print()
         
+
     def displayItemDetails(self, key):
         print()
         print("Item name:", self.inv[key][0])
@@ -64,26 +70,17 @@ class Cart(Inventory):
         super().__init__(inv)
 
     
-    def scanning(self):
+    def scanning(self, code):
         Inventory.displayInv(self.inv)
-        scanned = 0
-        while scanned != "pay":
-            scanned = input("Input a barcode to scan or type 'pay' to pay: ")
-            if scanned.isdigit():
-                scanned = int(scanned)
-                scanned = Inventory.retrieveItemSet(self.inv, scanned)
-                self.updateCart(scanned)
-                total_price, total_items = self.updateTotals(self.inv)
-                Cart.displayCart(self, total_items, total_price)
-                break
+        while code != "pay":
+            code = int(code)
+            self.cart[code] = Inventory.getInv(self.inv)[code]
+            total_price, total_items = self.updateTotals(self.inv)
+            self.displayCart(total_items, total_price)
+            return self.cart
         print()
         print("Thank you for shopping!")
     
-
-    def updateCart(self, key):
-        self.cart[key] = Inventory.retrieveItemSet(self.inv, key)
-
-
 
     def updateTotals(self, inv):
         total_price = 0
@@ -101,52 +98,64 @@ class Cart(Inventory):
         print()
         print("{: >20} {: >20} ".format("Item", "Price"))
         print()
-        for key in self.cart:
-            print("{: >20} {: >20}".format(self.cart[key][0], ("$"+str(self.inv[key][1]))))
+        for code in self.cart:
+            print("{: >20} {: >20}".format(self.cart[code][0], ("$"+str(self.cart[code][1]))))
         print("------------------------------------------")
         print("Total price: {: >28}".format("$"+str(total_price)))
         print()
         
 
-    class TestInv(unittest.TestCase):
-        '''Unit testing'''
-        def test_addItem(self):
-            pass
 
-        def test_delItem(self):
-            pass
+class TestInv(unittest.TestCase):
+    '''Unit testing'''
 
-        def test_editItem(self):
-            pass
+    def testAddItem(self):
+        '''Adding item to inv unit test'''
+        test_inv = Inventory({})
+        print(type(test_inv))
+        self.assertDictEqual(test_inv.addItem(4, "Shorts", 10), {4:["Shorts", 10]})
 
-        def test_addItem(self):
-            pass
+    def testDelItem(self):
+        '''Deletiing item from inv unit test'''
+        test_inv = Inventory({0:["Boots",34],
+                            1:["T-shirt",12]})
+        self.assertDictEqual(test_inv.delItem(0), {1:["T-shirt", 12]})
 
-        def test_displayItemDetails(self):
-            pass
+    def testEditItem(self):
+        '''Editing item in inv unit test'''
+        test_inv = Inventory({0:["Boots",34],
+                            1:["T-shirt",12]})
+        self.assertDictEqual(test_inv.editItem(1, "Long-sleeve shirt", 15), {0:["Boots",34], 1:["Long-sleeve shirt",15]})
 
-        def test_displayInv(self):
-            pass
-            
+    def testScanning(self):
+        '''Adding item to cart unit test'''
+        test_inv = Inventory({0:["Boots",34],
+                            1:["T-shirt",12]})
+        test_cart = Cart({}, test_inv)
+        self.assertDictEqual(test_cart.scanning(1),{1:["T-shirt",12]})
+    
+    def testAddThenScan(self):
+        '''Adding item to inv, then scanning that item unit test'''
+        test_inv = Inventory({0:["Boots",34],
+                            1:["T-shirt",12]})
+        test_cart = Cart({}, test_inv)
+        test_inv.addItem(3, "Shorts", 10)
+        self.assertDictEqual(test_cart.scanning(3), {3:["Shorts",10]})
+    
+    def testScanUnknown(self):
+        '''Scanning nonexistant item unit test'''
+        test_inv = Inventory({0:["Boots",34],
+                            1:["T-shirt",12]})
+        test_cart = Cart({}, test_inv)
+        self.assertRaises(KeyError, lambda: test_cart.scanning(2))
 
 
 
             
 def main():
 
-    inv = Inventory({0:["Boots",34],
-                1:["T-shirt",12],
-                2:["Jeans", 25],
-                3:["Socks", 4]
-                }
-                )
-
-    shoppingcart = Cart({}, inv)
-
     unittest.main()
 
-
-    
 
 main()
 
